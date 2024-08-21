@@ -1,10 +1,5 @@
-const express = require('express');
 const fetch = require('node-fetch');
-const app = express();
-const port = 3000;
 const cheerio = require('cheerio');
-
-app.use(express.json());
 
 async function getAccessToken() {
     const API_KEY = process.env.API_KEY;
@@ -29,26 +24,20 @@ async function getAccessToken() {
 
 // Function to get detailed information for a single event
 async function getEventDetails(eventId, accessToken, accountId) {
-    try {
-        const response = await fetch(`https://api.wildapricot.org/v2.3/accounts/${accountId}/events/${eventId}`, {
-            headers: {
-                'Authorization': `Bearer ${accessToken}`,
-                'Content-Type': 'application/json',
-            },
-        });
+    const response = await fetch(`https://api.wildapricot.org/v2.3/accounts/${accountId}/events/${eventId}`, {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+        },
+    });
 
-        if (!response.ok) {
-            throw new Error(`Failed to fetch details for event ID ${eventId}. Status: ${response.status}`);
-        }
-
-        const eventDetails = await response.json();
-        return eventDetails;
-    } catch (error) {
-        console.error('Error fetching event details:', error);
-        throw error; 
+    if (!response.ok) {
+        throw new Error(`Failed to fetch details for event ID ${eventId}. Status: ${response.status}`);
     }
-}
 
+    const eventDetails = await response.json();
+    return eventDetails;
+}
 
 async function getEvents() {
     const accountId = process.env.ACCOUNT_ID;
@@ -85,8 +74,8 @@ async function getEvents() {
     });
 }
 
-// GET endpoint to retrieve all volunteer opportunities
-app.get('/api/getVolunteerOpportunities', async (req, res) => {
+// Main handler for the API endpoint
+module.exports = async (req, res) => {
     try {
         const events = await getEvents();
         res.status(200).json(events); // Correctly format response
@@ -94,9 +83,4 @@ app.get('/api/getVolunteerOpportunities', async (req, res) => {
         console.error('Error handling request:', error);
         res.status(500).send('Internal Server Error');
     }
-});
-
-// Start the server
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
-});
+};
