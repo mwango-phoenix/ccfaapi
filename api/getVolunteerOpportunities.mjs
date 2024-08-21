@@ -72,7 +72,7 @@ async function getEvents() {
 }
 
 // Export a handler function for the API route
-export async function handler(req, res) {
+export default async function handler(req, res) {
     try {
         const events = await getEvents();
         res.status(200).json(events);
