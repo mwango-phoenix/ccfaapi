@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import cheerio from 'cheerio';
+import { load } from 'cheerio';
 
 async function getAccessToken() {
     const API_KEY = process.env.API_KEY;
@@ -59,7 +59,7 @@ async function getEvents() {
     const events = await Promise.all(eventDetailsPromises);
 
     return events.map(event => {
-        const $ = cheerio.load(event.Details.DescriptionHtml);
+        const $ = load(event.Details.DescriptionHtml);
         const pointAllocation = $('p').text().trim();
         return {
             role: event.Name,
@@ -70,6 +70,17 @@ async function getEvents() {
         };
     });
 }
+
+export default async function handler(req, res) {
+    try {
+        const events = await getEvents();
+        res.status(200).json(events);
+    } catch (error) {
+        console.error('Error handling request:', error);
+        res.status(500).send('Internal Server Error');
+    }
+}
+
 
 export default async function handler(req, res) {
     try {
