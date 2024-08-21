@@ -1,5 +1,5 @@
-import fetch from 'node-fetch';
 import { load } from 'cheerio';
+import fetch from 'node-fetch';
 
 async function getAccessToken() {
     const API_KEY = process.env.API_KEY;
@@ -71,18 +71,8 @@ async function getEvents() {
     });
 }
 
-export default async function handler(req, res) {
-    try {
-        const events = await getEvents();
-        res.status(200).json(events);
-    } catch (error) {
-        console.error('Error handling request:', error);
-        res.status(500).send('Internal Server Error');
-    }
-}
-
-
-export default async function handler(req, res) {
+// Export a handler function for the API route
+export async function handler(req, res) {
     try {
         const events = await getEvents();
         res.status(200).json(events);
