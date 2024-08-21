@@ -1,5 +1,5 @@
-const fetch = require('node-fetch');
-const cheerio = require('cheerio');
+import fetch from 'node-fetch';
+import cheerio from 'cheerio';
 
 async function getAccessToken() {
     const API_KEY = process.env.API_KEY;
@@ -22,7 +22,6 @@ async function getAccessToken() {
     return data.access_token;
 }
 
-// Function to get detailed information for a single event
 async function getEventDetails(eventId, accessToken, accountId) {
     const response = await fetch(`https://api.wildapricot.org/v2.3/accounts/${accountId}/events/${eventId}`, {
         headers: {
@@ -56,11 +55,9 @@ async function getEvents() {
 
     const { EventsIdentifiers } = await response.json();
 
-    // Fetch details for each event
     const eventDetailsPromises = EventsIdentifiers.map(eventId => getEventDetails(eventId, accessToken, accountId));
     const events = await Promise.all(eventDetailsPromises);
 
-    // Process and map event data
     return events.map(event => {
         const $ = cheerio.load(event.Details.DescriptionHtml);
         const pointAllocation = $('p').text().trim();
@@ -74,13 +71,12 @@ async function getEvents() {
     });
 }
 
-// Main handler for the API endpoint
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
     try {
         const events = await getEvents();
-        res.status(200).json(events); // Correctly format response
+        res.status(200).json(events);
     } catch (error) {
         console.error('Error handling request:', error);
         res.status(500).send('Internal Server Error');
     }
-};
+}
