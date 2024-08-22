@@ -1,5 +1,4 @@
-import { postRequest } from '../utils/apiUtils.mjs';
-import { getAccessToken } from '../utils/tokenUtils.mjs';
+import { getAccessToken, postRequest } from '../utils/apiUtils.mjs';
 
 export async function registerForEvent(eventId, userData) {
     const accessToken = await getAccessToken();
