@@ -1,7 +1,23 @@
 // getVolunteerOpportunities.mjs
 import fetch from 'node-fetch';
 import { load } from 'cheerio';
-import { getAccessToken, getEventDetails } from '../utils/apiUtils.mjs'; 
+import { getAccessToken } from '../utils/apiUtils.mjs'; 
+
+export async function getEventDetails(eventId, accessToken, accountId) {
+    const response = await fetch(`https://api.wildapricot.org/v2.3/accounts/${accountId}/events/${eventId}`, {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch details for event ID ${eventId}. Status: ${response.status}`);
+    }
+
+    const eventDetails = await response.json();
+    return eventDetails;
+}
 
 export default async function getVolunteerOpportunities(req, res) {
     try {
