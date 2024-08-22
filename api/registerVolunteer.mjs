@@ -1,6 +1,6 @@
 import { getAccessToken, postRequest } from '../utils/apiUtils.mjs';
 
-export async function registerForEvent(eventId, userData) {
+export default async function registerForEvent(eventId, userData) {
     const accessToken = await getAccessToken();
     const accountId = process.env.ACCOUNT_ID;
     
