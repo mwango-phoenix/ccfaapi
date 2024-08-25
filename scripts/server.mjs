@@ -7,16 +7,15 @@ import getUserData from '../api/getUserData.mjs';
 const app = express();
 const port = 3000;
 
-// Use the cors middleware with specific origin
-app.use(cors({
-    origin: 'https://theccfa.net',
-}));
-
+var corsOptions = {
+    origin: 'https://theccfa.net', // Your frontend domain
+    allowedHeaders: 'Content-Type', // Allowed headers
+}
 app.use(express.json());
 
-app.get('/getVolunteerOpportunities', getVolunteerOpportunities);
-app.post('/registerVolunteer', registerForEvent);
-app.get('/getUserData', getUserData);
+app.get('/getVolunteerOpportunities', cors(corsOptions), getVolunteerOpportunities);
+app.post('/registerVolunteer', cors(corsOptions), registerForEvent);
+app.get('/getUserData', cors(corsOptions), getUserData);
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
