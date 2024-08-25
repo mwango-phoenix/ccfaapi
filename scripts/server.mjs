@@ -7,22 +7,16 @@ import getUserData from '../api/getUserData.mjs';
 const app = express();
 const port = 3000;
 const corsOptions = {
-    origin: 'https://theccfa.net',
+    origin: '*',
     methods: 'GET,POST,OPTIONS',
-    optionsSuccessStatus: 204 // for handling OPTIONS requests
+    allowedHeaders: 'Content-Type',
 };
+app.use(cors(corsOptions));
 app.use(express.json());
-app.use(cors())
 
 app.get('/getVolunteerOpportunities', getVolunteerOpportunities);
 app.post('/registerVolunteer', registerForEvent);
-app.get('/getUserData', (req, res) => {
-    res.setHeader('Access-Control-Allow-Origin', 'https://theccfa.net'); // Set the allowed origin
-    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS'); // Set allowed methods
-
-    // Your existing code to fetch and return user data
-    getUserData(req, res);
-});
+app.get('/getUserData',getUserData);
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
