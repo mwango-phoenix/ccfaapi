@@ -15,6 +15,7 @@ export async function getAccessToken() {
     });
 
     if (!response.ok) {
+        console.log('no access token')
         throw new Error('Failed to get access token');
     }
 

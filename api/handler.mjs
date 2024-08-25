@@ -1,5 +1,5 @@
-import { getEvents } from './getVolunteerOpportunities.mjs';
-import { registerForEvent } from './registerVolunteer.mjs';
+import { getEventDetails } from './getVolunteerOpportunities.mjs';
+import registerForEvent  from './registerVolunteer.mjs';
 
 export default async function handler(req, res) {
     try {
@@ -8,7 +8,8 @@ export default async function handler(req, res) {
             const registrationResult = await registerForEvent(eventId, userData);
             res.status(200).json(registrationResult);
         } else {
-            const events = await getEvents();
+            const events = await getEventDetails();
+            console.log("yay")
             res.status(200).json(events);
         }
     } catch (error) {
