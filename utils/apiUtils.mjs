@@ -28,6 +28,7 @@ export async function getTokenLogin(authorizationCode) {
     const CLIENT_SECRET = process.env.CLIENT_SECRET;
     const authHeader = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64');
     const redirect_uri = 'https://theccfa.net/Volunteer-Opportunities/';
+    console.log(authorizationCode)
 
 
     const body = new URLSearchParams({
