@@ -23,7 +23,7 @@ export async function getAccessToken() {
     return data.access_token;
 }
 
-export async function getTokenLogin(authorizationCode, redirectUri) {
+export async function getTokenLogin(authorizationCode) {
     const CLIENT_ID = process.env.CLIENT_ID;
     const CLIENT_SECRET = process.env.CLIENT_SECRET;
     const authHeader = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64');
@@ -32,7 +32,7 @@ export async function getTokenLogin(authorizationCode, redirectUri) {
         grant_type: 'authorization_code',
         code: authorizationCode,
         client_id: CLIENT_ID,
-        redirect_uri: redirectUri,
+        redirect_uri: 'https%3A%2F%2Ftheccfa.net%2FVolunteer-Opportunities%2F',
         scope: 'contacts_me', 
     }).toString();
 
