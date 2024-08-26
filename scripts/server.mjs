@@ -7,9 +7,10 @@ import getUserData from '../api/getUserData.mjs';
 const app = express();
 const port = 3000;
 const corsOptions = {
-    origin: '*',
-    methods: 'GET,POST,OPTIONS',
-    allowedHeaders: 'Content-Type',
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type"],
+    credentials: true,
 };
 app.use(cors(corsOptions));
 app.use(express.json());
