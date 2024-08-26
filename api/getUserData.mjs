@@ -5,10 +5,8 @@ import { getAccessToken, getTokenLogin } from '../utils/apiUtils.mjs';
 export default async function getUserData(req, res) {
     try {
         const authorizationCode = req.query.authorizationCode;
-        const redirect_uri = req.query.redirectUri
         const accountId = process.env.ACCOUNT_ID;
-        const accessToken = await getTokenLogin(authorizationCode, redirect_uri);
-        console.log(redirect_uri, 'redirect')
+        const accessToken = await getTokenLogin(authorizationCode);
 
         // Fetch user data
         const response = await fetch(`https://api.wildapricot.org/v2.3/accounts/${accountId}/contacts/me`, {
