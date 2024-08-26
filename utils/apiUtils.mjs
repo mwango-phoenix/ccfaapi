@@ -23,6 +23,37 @@ export async function getAccessToken() {
     return data.access_token;
 }
 
+export async function getTokenLogin(authorizationCode, redirectUri) {
+    const CLIENT_ID = process.env.CLIENT_ID;
+    const CLIENT_SECRET = process.env.CLIENT_SECRET;
+    const authHeader = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64');
+
+    const body = new URLSearchParams({
+        grant_type: 'authorization_code',
+        code: authorizationCode,
+        client_id: CLIENT_ID,
+        redirect_uri: redirectUri,
+        scope: 'contacts_me', 
+    }).toString();
+
+    const response = await fetch('https://oauth.wildapricot.org/auth/token', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Basic ${authHeader}`,
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: body,
+    });
+
+    if (!response.ok) {
+        console.error('Failed to get access token with authorization code:', await response.text());
+        throw new Error('Failed to get access token');
+    }
+
+    const data = await response.json();
+    return data.access_token;
+}
+
 // Function to make a GET request
 export async function getRequest(url, accessToken) {
     const response = await fetch(url, {
