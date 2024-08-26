@@ -1,4 +1,3 @@
-// getVolunteerOpportunities.mjs
 import fetch from 'node-fetch';
 import { getAccessToken } from '../utils/apiUtils.mjs';
 
@@ -18,12 +17,20 @@ export default async function getUserData(req, res) {
 
         if (!response.ok) {
             // If the response is not OK, set the status code of the response
-            const errorData = await response.json();
-            res.status(response.status).json({ error: errorData.message || 'Failed to fetch user data' });
+            const errorData = await response.text(); // Get response as text
+            res.status(response.status).json({ error: errorData || 'Failed to fetch user data' });
             return;
         }
 
-        const data = await response.json();
+        // Try to parse the response as JSON
+        let data;
+        try {
+            data = await response.json();
+        } catch (jsonError) {
+            console.error('Error parsing JSON:', jsonError);
+            res.status(500).json({ error: 'Failed to parse user data' });
+            return;
+        }
 
         // Send user data as JSON response
         res.status(200).json(data);
