@@ -17,7 +17,10 @@ export default async function getUserData(req, res) {
         });
 
         if (!response.ok) {
-            throw new Error('Fled to fetch user data', response);
+            // If the response is not OK, set the status code of the response
+            const errorData = await response.json();
+            res.status(response.status).json({ error: errorData.message || 'Failed to fetch user data' });
+            return;
         }
 
         const data = await response.json();
