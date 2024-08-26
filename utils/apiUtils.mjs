@@ -28,19 +28,14 @@ export async function getTokenLogin(authorizationCode) {
     const CLIENT_ID = process.env.CLIENT_ID;
     const CLIENT_SECRET = process.env.CLIENT_SECRET;
     const authHeader = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64');
-    const redirect_uri = 'https://theccfa.net/Volunteer-Opportunities/';
-    console.log(authHeader)
-
 
     const body = new URLSearchParams({
         grant_type: 'authorization_code',
         code: authorizationCode,
         client_id: CLIENT_ID,
-        redirect_uri: redirect_uri,
+        redirect_uri: 'https://theccfa.net/Volunteer-Opportunities/',
         scope: 'contacts_me', 
     }).toString();
-
-    console.log(body)
 
     const response = await fetch('https://oauth.wildapricot.org/auth/token', {
         method: 'POST',
