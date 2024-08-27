@@ -1,9 +1,21 @@
 import { getAccessToken, postRequest } from '../utils/apiUtils.mjs';
 
-export default async function registerForEvent(res, req) {
+export default async function registerForEvent(req, res) {
+    // Check if req.body is defined
+    if (!req.body) {
+        return res.status(400).json({ error: 'Request body is missing' });
+    }
+
+    // Destructure eventId and userData from req.body
     const { eventId, userData } = req.body;
-    console.log(eventId, userData)
-    
+
+    // Validate that eventId and userData are provided
+    if (!eventId || !userData) {
+        return res.status(400).json({ error: 'eventId or userData is missing' });
+    }
+
+    console.log(eventId, userData);
+
     try {
         const accessToken = await getAccessToken();
         const accountId = process.env.ACCOUNT_ID;
