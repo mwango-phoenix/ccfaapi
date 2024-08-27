@@ -39,10 +39,12 @@ export default async function handler(req, res) {
 
                     // Check cache first
                     if (userDataCache.has(authorizationCode)) {
+                        console.log("here")
                         res.status(200).json(userDataCache.get(authorizationCode));
                     } else {
                         // Fetch and cache data
                         try {
+                            console.log("HERE")
                             const userData = await getUserData(req, res);
                             userDataCache.set(authorizationCode, userData);
                             res.status(200).json(userData);
