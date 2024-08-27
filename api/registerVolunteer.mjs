@@ -2,6 +2,7 @@ import { getAccessToken, postRequest } from '../utils/apiUtils.mjs';
 
 export default async function registerForEvent(req, res) {
     // Check if req.body is defined
+    console.log(req)
     if (!req.body) {
         return res.status(400).json({ error: 'Request body is missing' });
     }
