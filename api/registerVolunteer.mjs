@@ -2,11 +2,11 @@ import { getAccessToken, postRequest } from '../utils/apiUtils.mjs';
 
 export default async function registerForEvent(res, req) {
     const { eventId, userData } = req.body;
+    console.log(eventId, userData)
     
     try {
         const accessToken = await getAccessToken();
         const accountId = process.env.ACCOUNT_ID;
-
         const registrationData = {
             "Event": {
                 "Id": eventId
