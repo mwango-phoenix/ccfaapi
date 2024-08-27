@@ -61,7 +61,7 @@ export default async function registerForEvent(req, res) {
             "ShowToPublic": false
         };
 
-        console.log(registrationData)
+        console.log(userData, userData.firstName)
         const url = `https://api.wildapricot.org/v2.3/accounts/${accountId}/eventregistrations`;
         const result = await postRequest(url, accessToken, registrationData);
         res.json(result);
