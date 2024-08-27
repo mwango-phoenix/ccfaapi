@@ -1,6 +1,6 @@
 // getVolunteerOpportunities.mjs
 import fetch from 'node-fetch';
-import { getAccessToken, getTokenLogin } from '../utils/apiUtils.mjs';
+import { getTokenLogin } from '../utils/apiUtils.mjs';
 
 export default async function getUserData(req, res) {
     try {
