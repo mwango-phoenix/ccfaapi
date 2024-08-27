@@ -34,23 +34,18 @@ export default async function registerForEvent(req, res) {
             "RegistrationFields": [
                 {
                     "FieldName": "First name",
-                    "Value": userData.firstName,
+                    "Value": userData.FirstName,
                     "SystemCode": "FirstName"
                 },
                 {
                     "FieldName": "Last name",
-                    "Value": userData.lastName,
+                    "Value": userData.LastName,
                     "SystemCode": "LastName"
                 },
                 {
                     "FieldName": "e-Mail",
-                    "Value": userData.email,
+                    "Value": userData.Email,
                     "SystemCode": "Email"
-                },
-                {
-                    "FieldName": "Phone",
-                    "Value": userData.phone,
-                    "SystemCode": "Phone"
                 },
                 {
                     "FieldName": "Waiver",
