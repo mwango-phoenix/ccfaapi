@@ -4,7 +4,6 @@ import { Buffer } from 'buffer';
 export async function getAccessToken() {
     const API_KEY = process.env.API_KEY;
     const authHeader = Buffer.from(`APIKEY:${API_KEY}`).toString('base64');
-    console.log(authHeader)
 
     const response = await fetch('https://oauth.wildapricot.org/auth/token', {
         method: 'POST',
