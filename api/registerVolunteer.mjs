@@ -4,7 +4,6 @@ export default async function registerForEvent(req, res) {
 
     const eventId = req.query.eventId;
     const userData = req.query.userData;
-    console.log(eventId, userData)
     // Validate that eventId and userData are provided
     if (!eventId || !userData) {
         return res.status(400).json({ error: 'eventId or userData is missing' });
@@ -52,7 +51,6 @@ export default async function registerForEvent(req, res) {
             ],
             "ShowToPublic": false
         };
-        console.log(userData.FirstName)
 
         const url = `https://api.wildapricot.org/v2.3/accounts/${accountId}/eventregistrations`;
         const result = await postRequest(url, accessToken, registrationData);
