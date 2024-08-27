@@ -33,7 +33,7 @@ export async function getTokenLogin(authorizationCode) {
         grant_type: 'authorization_code',
         code: authorizationCode,
         client_id: CLIENT_ID,
-        redirect_uri: 'https://theccfa.net/Volunteer-Opportunities?action=handleAuth',
+        redirect_uri: 'https://theccfa.net/Volunteer-Opportunities/',
         scope: 'contacts_me', 
     }).toString();
 
