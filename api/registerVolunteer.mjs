@@ -18,11 +18,12 @@ export default async function registerForEvent(req, res) {
         const accessToken = await getAccessToken();
         const accountId = process.env.ACCOUNT_ID;
         const registrationData = {
+            "Id": 0,
             "Event": {
-                "Id": eventId
+                "Id": 5842936
             },
             "Contact": {
-                "Id": userData.contactId
+                "Id": 75255008
             },
             "RegistrationTypeId": 9326765,
             "GuestRegistrationsSummary": {
@@ -55,8 +56,8 @@ export default async function registerForEvent(req, res) {
             ],
             "ShowToPublic": false
         };
+        console.log(userData.FirstName)
 
-        console.log(userData, userData.firstName)
         const url = `https://api.wildapricot.org/v2.3/accounts/${accountId}/eventregistrations`;
         const result = await postRequest(url, accessToken, registrationData);
         res.json(result);
