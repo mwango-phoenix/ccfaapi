@@ -83,6 +83,7 @@ export async function postRequest(url, accessToken, data) {
     });
 
     if (!response.ok) {
+        console.log(response.message())
         throw new Error(`Failed to post to ${url}. Status: ${response.status}`);
     }
 
