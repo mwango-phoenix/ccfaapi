@@ -34,8 +34,8 @@ export default async function getUserData(req, res) {
             // registration.IsCheckedIn
         ]);
 
+        const volunteerPoints = await getRequest(userData.url, accessToken);
 
-        console.log(userData)
         // Prepare the combined response
         const responseData = {
             Id: contactId,
@@ -43,6 +43,7 @@ export default async function getUserData(req, res) {
             LastName: userData.LastName,
             Email: userData.Email,
             Registrations: registrations,
+            Points: volunteerPoints,
         };
 
         // Cache the combined data
