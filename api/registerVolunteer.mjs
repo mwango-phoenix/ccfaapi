@@ -3,7 +3,7 @@ import { getAccessToken, postRequest } from '../utils/apiUtils.mjs';
 export default async function registerForEvent(req, res) {
 
     const eventId = req.query.eventId;
-    const userData = req.query.userData;
+    const userData = JSON.parse(req.query.userData);
     // Validate that eventId and userData are provided
     if (!eventId || !userData) {
         return res.status(400).json({ error: 'eventId or userData is missing' });
