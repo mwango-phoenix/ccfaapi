@@ -30,7 +30,8 @@ export default async function getUserData(req, res) {
         // Extract all event registration IDs
         const registrations = registrationsData.map(registration => [
             registration.Event.Id, // eventId
-            registration.Id        // registration Id
+            registration.Id,        // registration Id
+            // registration.IsCheckedIn
         ]);
 
 

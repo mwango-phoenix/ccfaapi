@@ -97,3 +97,54 @@ export async function postRequest(url, accessToken, data) {
     }
 }
 
+export async function putRequest(url, accessToken, data) {
+    try {
+        const response = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            // Attempt to parse the response body for error details
+            throw new Error(`Failed to update to ${url}. Status: ${response.status}`);
+        }
+        return response.json();
+    } catch (error) {
+        console.error('Error during post request:', error);
+        throw error; // Re-throw the error to be handled by the caller
+    }
+}
+
+export async function deleteRequest(url, accessToken) {
+    try {
+        const response = await fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        // Check if the response is not OK (status codes 4xx or 5xx)
+        if (!response.ok) {
+            const errorMessage = await response.text(); // Capture the error message from the response body
+            throw new Error(`Failed to delete from ${url}. Status: ${response.status} - ${errorMessage}`);
+        }
+
+        // Attempt to parse JSON response if available
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+            return await response.json();
+        }
+
+        // Return empty object if no JSON response
+        return {};
+    } catch (error) {
+        console.error(`Error in deleteRequest: ${error.message}`);
+        throw error;
+    }
+}
