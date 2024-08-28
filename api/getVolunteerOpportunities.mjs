@@ -45,6 +45,7 @@ export default async function getVolunteerOpportunities(req, res) {
             const pointAllocation = $('p').text().trim();
             return {
                 role: event.Name,
+                url: event.Url,
                 positionsLeft: event.RegistrationsLimit ? event.RegistrationsLimit - event.ConfirmedRegistrationsCount : 'N/A',
                 pointAllocation: pointAllocation || 'TBD',
                 date: new Date(event.StartDate).toLocaleDateString(),
