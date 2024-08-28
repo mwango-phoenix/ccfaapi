@@ -34,8 +34,10 @@ export default async function getUserData(req, res) {
             // registration.IsCheckedIn
         ]);
 
-        const volunteerData = await getRequest(userData.url, accessToken)
-        const volunteerPoints = volunteerData.FieldValues.find(field => field.FieldName === "Volunteer Points")?.Value || 0;
+        console.log(userData.url)
+
+        // const volunteerData = await getRequest(userData.url, accessToken)
+        // const volunteerPoints = volunteerData.FieldValues.find(field => field.FieldName === "Volunteer Points")?.Value || 0;
 
         // Prepare the combined response
         const responseData = {
@@ -44,7 +46,7 @@ export default async function getUserData(req, res) {
             LastName: userData.LastName,
             Email: userData.Email,
             Registrations: registrations,
-            Points: volunteerPoints,
+            // Points: volunteerPoints,
         };
 
         // Cache the combined data
