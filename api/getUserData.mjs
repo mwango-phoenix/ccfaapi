@@ -18,9 +18,7 @@ export default async function getUserData(req, res) {
 
         // Fetch user data
         const url = `https://api.wildapricot.org/v2.3/accounts/${accountId}/contacts/me`
-        const userResponse = await getRequest(url, accessToken);
-
-        const userData = userResponse.json()
+        const userData= await getRequest(url, accessToken);
 
         // Extract contactId from user data
         const contactId = userData.Id;
