@@ -57,6 +57,7 @@ export async function getTokenLogin(authorizationCode) {
 // Function to make a GET request
 export async function getRequest(url, accessToken) {
     const response = await fetch(url, {
+        method: 'GET',
         headers: {
             'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json',

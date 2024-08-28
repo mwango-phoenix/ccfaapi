@@ -1,10 +1,10 @@
 import fetch from 'node-fetch';
-import { getTokenLogin } from '../utils/apiUtils.mjs';
+import { getTokenLogin, getAccessToken, getRequest } from '../utils/apiUtils.mjs';
 
 const userDataCache = new Map();
 
 export default async function getUserData(req, res) {
-    const authorizationCode = req.query.authorizationCode;
+    var authorizationCode = req.query.authorizationCode;
 
     if (userDataCache.has(authorizationCode)) {
         res.status(200).json(userDataCache.get(authorizationCode));
@@ -17,23 +17,16 @@ export default async function getUserData(req, res) {
         console.log(accessToken)
 
         // Fetch user data
-        const userResponse = await fetch(`https://api.wildapricot.org/v2.3/accounts/${accountId}/contacts/me`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${accessToken}`,
-                'Content-Type': 'application/json'
-            }
-        });
+        const url = `https://api.wildapricot.org/v2.3/accounts/${accountId}/contacts/me`
+        const userResponse = await getRequest(url, accessToken);
 
-        const userData = await handleResponse(userResponse);
-        if (userData.error) {
-            res.status(userResponse.status).json(userData);
-            return;
-        }
+        const userData = userResponse.json()
 
         // Extract contactId from user data
         const contactId = userData.Id;
         console.log(contactId)
+
+        accessToken = await getAccessToken();
 
         // Fetch event registrations
         const registrationsResponse = await fetch(`https://api.wildapricot.org/v2.3/accounts/${accountId}/eventregistrations?contactId=${contactId}`, {
