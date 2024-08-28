@@ -34,7 +34,8 @@ export default async function getUserData(req, res) {
             // registration.IsCheckedIn
         ]);
 
-        const volunteerPoints = await getRequest(userData.url, accessToken);
+        const volunteerData = await getRequest(userData.url, accessToken)
+        const volunteerPoints = volunteerData.FieldValues.find(field => field.FieldName === "Volunteer Points")?.Value || 0;
 
         // Prepare the combined response
         const responseData = {
