@@ -35,6 +35,7 @@ export default async function getUserData(req, res) {
         ]);
 
 
+        console.log(userData)
         // Prepare the combined response
         const responseData = {
             Id: contactId,
