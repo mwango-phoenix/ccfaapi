@@ -28,7 +28,7 @@ export default async function getUserData(req, res) {
         url = `https://api.wildapricot.org/v2.3/accounts/${accountId}/eventregistrations?contactId=${contactId}`;
         const registrationsData = await getRequest(url, accessToken);
         // Extract all event registration IDs
-        const registrationIds = registrationsData.map(registration => registration.Id);
+        const registrationIds = registrationsData.map(registration => registration.Event.Id);
 
 
         // Prepare the combined response
