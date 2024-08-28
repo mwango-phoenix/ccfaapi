@@ -12,7 +12,6 @@ export default async function registerForEvent(req, res) {
     try {
         const accessToken = await getAccessToken();
         const accountId = process.env.ACCOUNT_ID;
-        console.log(userData.Id)
         const registrationData = {
             "Id": 0,
             "Event": {
