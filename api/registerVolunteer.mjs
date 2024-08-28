@@ -12,21 +12,15 @@ export default async function registerForEvent(req, res) {
     try {
         const accessToken = await getAccessToken();
         const accountId = process.env.ACCOUNT_ID;
-        console.log(userData.Id, userData)
         const registrationData = {
             "Id": 0,
             "Event": {
                 "Id": 5842936
             },
             "Contact": {
-                "Id": 75255008
+                "Id": userData.Id
             },
             "RegistrationTypeId": 9326765,
-            "GuestRegistrationsSummary": {
-                "NumberOfGuests": 0,
-                "NumberOfGuestsCheckedIn": 0,
-                "GuestRegistrations": []
-            },
             "IsCheckedIn": false,
             "RegistrationFields": [
                 {
