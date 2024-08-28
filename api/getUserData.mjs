@@ -33,6 +33,7 @@ export default async function getUserData(req, res) {
             // Extract contactId from user data
             const contactId = userData.Id;
 
+
             // Fetch event registrations
             const registrationsResponse = await fetch(`https://api.wildapricot.org/v2.3/accounts/${accountId}/eventregistrations?contactId=${contactId}`, {
                 method: 'GET',
@@ -41,6 +42,7 @@ export default async function getUserData(req, res) {
                     'Content-Type': 'application/json'
                 }
             });
+            console.log(registrationsResponse.text(), "access:", accessToken)
 
             if (!registrationsResponse.ok) {
                 const errorData = await registrationsResponse.json();
