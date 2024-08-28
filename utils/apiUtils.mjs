@@ -73,19 +73,27 @@ export async function getRequest(url, accessToken) {
 
 // Function to make a POST request
 export async function postRequest(url, accessToken, data) {
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-    });
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
 
-    if (!response.ok) {
-        console.log(response.message())
-        throw new Error(`Failed to post to ${url}. Status: ${response.status}`);
+        if (!response.ok) {
+            // Attempt to parse the response body for error details
+            const errorDetails = await response.text();
+            console.error(`Failed to post to ${url}. Status: ${response.status}, Status Text: ${response.statusText}, Error Details: ${errorDetails}`);
+            throw new Error(`Failed to post to ${url}. Status: ${response.status}`);
+        }
+
+        return response.json();
+    } catch (error) {
+        console.error('Error during post request:', error);
+        throw error; // Re-throw the error to be handled by the caller
     }
-
-    return response.json();
 }
+
