@@ -14,24 +14,7 @@ export default async function getUserData(req, res) {
     try {
         const accountId = process.env.ACCOUNT_ID;
         const accessToken = await getTokenLogin(authorizationCode);
-
-        // Function to handle fetch response and errors
-        const handleResponse = async (response) => {
-            const text = await response.text();
-            if (!response.ok) {
-                try {
-                    const errorData = JSON.parse(text);
-                    return { error: errorData.message || 'Failed to fetch data' };
-                } catch {
-                    return { error: 'Failed to parse error response' };
-                }
-            }
-            try {
-                return JSON.parse(text);
-            } catch {
-                return { error: 'Response is not valid JSON' };
-            }
-        };
+        console.log(accessToken)
 
         // Fetch user data
         const userResponse = await fetch(`https://api.wildapricot.org/v2.3/accounts/${accountId}/contacts/me`, {
@@ -50,6 +33,7 @@ export default async function getUserData(req, res) {
 
         // Extract contactId from user data
         const contactId = userData.Id;
+        console.log(contactId)
 
         // Fetch event registrations
         const registrationsResponse = await fetch(`https://api.wildapricot.org/v2.3/accounts/${accountId}/eventregistrations?contactId=${contactId}`, {
@@ -60,11 +44,11 @@ export default async function getUserData(req, res) {
             }
         });
 
-        const registrationsData = await handleResponse(registrationsResponse);
-        if (registrationsData.error) {
-            res.status(registrationsResponse.status).json(registrationsData);
-            return;
-        }
+        console.log(registrationsResponse.text())
+        // if (registrationsData.error) {
+        //     res.status(registrationsResponse.status).json(registrationsData);
+        //     return;
+        // }
 
         // Prepare the combined response
         const responseData = {
@@ -72,7 +56,7 @@ export default async function getUserData(req, res) {
             FirstName: userData.FirstName,
             LastName: userData.LastName,
             Email: userData.Email,
-            Registrations: registrationsData
+            // Registrations: registrationsData
         };
 
         // Cache the combined data
