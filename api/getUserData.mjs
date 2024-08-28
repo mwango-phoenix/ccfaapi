@@ -13,8 +13,7 @@ export default async function getUserData(req, res) {
 
     try {
         const accountId = process.env.ACCOUNT_ID;
-        const accessToken = await getTokenLogin(authorizationCode);
-        console.log(accessToken)
+        var accessToken = await getTokenLogin(authorizationCode);
 
         // Fetch user data
         const url = `https://api.wildapricot.org/v2.3/accounts/${accountId}/contacts/me`
@@ -22,7 +21,6 @@ export default async function getUserData(req, res) {
 
         // Extract contactId from user data
         const contactId = userData.Id;
-        console.log(contactId)
 
         accessToken = await getAccessToken();
 
