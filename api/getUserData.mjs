@@ -16,7 +16,7 @@ export default async function getUserData(req, res) {
         var accessToken = await getTokenLogin(authorizationCode);
 
         // Fetch user data
-        const url = `https://api.wildapricot.org/v2.3/accounts/${accountId}/contacts/me`
+        let url = `https://api.wildapricot.org/v2.3/accounts/${accountId}/contacts/me`;
         const userData= await getRequest(url, accessToken);
 
         // Extract contactId from user data
@@ -25,19 +25,11 @@ export default async function getUserData(req, res) {
         accessToken = await getAccessToken();
 
         // Fetch event registrations
-        const registrationsResponse = await fetch(`https://api.wildapricot.org/v2.3/accounts/${accountId}/eventregistrations?contactId=${contactId}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${accessToken}`,
-                'Content-Type': 'application/json'
-            }
-        });
+        url = `https://api.wildapricot.org/v2.3/accounts/${accountId}/eventregistrations?contactId=${contactId}`;
+        const registrationsData = await getRequest(url, accessToken);
+        // Extract all event registration IDs
+        const registrationIds = registrationsData.map(registration => registration.Id);
 
-        console.log(registrationsResponse.text())
-        // if (registrationsData.error) {
-        //     res.status(registrationsResponse.status).json(registrationsData);
-        //     return;
-        // }
 
         // Prepare the combined response
         const responseData = {
@@ -45,7 +37,7 @@ export default async function getUserData(req, res) {
             FirstName: userData.FirstName,
             LastName: userData.LastName,
             Email: userData.Email,
-            // Registrations: registrationsData
+            Registrations: registrationIds,
         };
 
         // Cache the combined data
