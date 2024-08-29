@@ -3,6 +3,7 @@ import { getAccessToken, postRequest } from '../utils/apiUtils.mjs';
 export default async function registerForEvent(req, res) {
 
     const eventId = req.query.eventId;
+    const registrationId = req.query.regId;
     const userData = JSON.parse(req.query.userData);
     // Validate that eventId and userData are provided
     if (!eventId || !userData) {
@@ -20,7 +21,7 @@ export default async function registerForEvent(req, res) {
             "Contact": {
                 "Id": userData.Id,
             },
-            "RegistrationTypeId": 9326765,
+            "RegistrationTypeId": registrationId,
             "IsCheckedIn": false,
             "RegistrationFields": [
                 {
