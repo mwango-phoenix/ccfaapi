@@ -1,22 +1,9 @@
-// getVolunteerOpportunities.mjs
-import fetch from 'node-fetch';
+import { getAccessToken, getRequest } from '../utils/apiUtils.mjs'; 
 import { load } from 'cheerio';
-import { getAccessToken } from '../utils/apiUtils.mjs'; 
 
 export async function getEventDetails(eventId, accessToken, accountId) {
-    const response = await fetch(`https://api.wildapricot.org/v2.3/accounts/${accountId}/events/${eventId}`, {
-        headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-        },
-    });
-
-    if (!response.ok) {
-        throw new Error(`Failed to fetch details for event ID ${eventId}. Status: ${response.status}`);
-    }
-
-    const eventDetails = await response.json();
-    return eventDetails;
+    const url = `https://api.wildapricot.org/v2.3/accounts/${accountId}/events/${eventId}`;
+    return getRequest(url, accessToken); // Use getRequest from apiUtils.mjs
 }
 
 export default async function getVolunteerOpportunities(req, res) {
@@ -24,18 +11,8 @@ export default async function getVolunteerOpportunities(req, res) {
         const accountId = process.env.ACCOUNT_ID;
         const accessToken = await getAccessToken();
 
-        const response = await fetch(`https://api.wildapricot.org/v2.3/accounts/${accountId}/events?%24filter=Tags%20in%20%5Bvolunteer%5D&idsOnly=true`, {
-            headers: {
-                'Authorization': `Bearer ${accessToken}`,
-                'Content-Type': 'application/json',
-            },
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to fetch event identifiers');
-        }
-
-        const { EventsIdentifiers } = await response.json();
+        const url = `https://api.wildapricot.org/v2.3/accounts/${accountId}/events?%24filter=Tags%20in%20%5Bvolunteer%5D&idsOnly=true`;
+        const { EventsIdentifiers } = await getRequest(url, accessToken); // Use getRequest from apiUtils.mjs
 
         const eventDetailsPromises = EventsIdentifiers.map(eventId => getEventDetails(eventId, accessToken, accountId));
         const events = await Promise.all(eventDetailsPromises);

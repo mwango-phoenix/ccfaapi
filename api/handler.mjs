@@ -1,82 +1,89 @@
-// import getVolunteerOpportunities from './getVolunteerOpportunities.mjs';
-// import registerForEvent from './registerVolunteer.mjs';
-// import getUserData from './getUserData.mjs';
+//handler.mjs
+import getVolunteerOpportunities from './getVolunteerOpportunities.mjs';
+import registerForEvent from './registerVolunteer.mjs';
+import getUserData from './getUserData.mjs';
+import deleteRegistration from './cancelRegistration.mjs';
 
-// const userDataCache = new Map(); // In-memory cache
+const userDataCache = new Map(); // In-memory cache
 
-// export default async function handler(req, res) {
-//     try {
-//         // Add CORS headers
-//         res.setHeader('Access-Control-Allow-Origin', '*');
-//         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-//         res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+// Common CORS handler
+function handleCORS(req, res) {
+    // Uncomment and set headers if needed
+    // res.setHeader('Access-Control-Allow-Origin', '*');
+    // res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    // res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    if (req.method === 'OPTIONS') {
+        res.status(200).end();
+        return true;
+    }
+    return false;
+}
 
-//         // Handle OPTIONS request for CORS preflight
-//         if (req.method === 'OPTIONS') {
-//             res.status(200).end();
-//             return;
-//         }
+// Route handler mapping
+const routeHandlers = {
+    '/getVolunteerOpportunities': {
+        GET: getVolunteerOpportunities,
+    },
+    '/getUserData': {
+        GET: async (req, res) => {
+            const { authorizationCode } = req.query;
 
-//         // Handle the different routes
-//         switch (req.url) {
-//             case '/getVolunteerOpportunities':
-//                 if (req.method === 'GET') {
-//                     console.log("Getting Opportunities List");
-//                     await getVolunteerOpportunities(req, res);
-//                 } else {
-//                     res.status(405).json({ error: 'Method Not Allowed' });
-//                 }
-//                 break;
+            if (!authorizationCode) {
+                res.status(400).json({ error: 'Bad Request: Missing authorization code' });
+                return;
+            }
 
-//             case '/getUserData':
-//                 if (req.method === 'GET') {
-//                     const { authorizationCode } = req.query;
+            if (userDataCache.has(authorizationCode)) {
+                res.status(200).json(userDataCache.get(authorizationCode));
+                return;
+            }
 
-//                     if (!authorizationCode) {
-//                         res.status(400).json({ error: 'Bad Request: Missing authorization code' });
-//                         return;
-//                     }
+            try {
+                const userData = await getUserData(req, res);
+                userDataCache.set(authorizationCode, userData);
+                res.status(200).json(userData);
+            } catch (error) {
+                res.status(500).json({ error: 'Failed to fetch user data' });
+            }
+        },
+    },
+    '/registerVolunteer': {
+        POST: async (req, res) => {
+            const { eventId, regId, userData } = req.query;
+            if (!eventId || !regId || !userData) {
+                res.status(400).json({ error: 'Bad Request: Missing eventId, registrationTypeId or userData' });
+                return;
+            }
 
-//                     // Check cache first
-//                     if (userDataCache.has(authorizationCode)) {
-//                         res.status(200).json(userDataCache.get(authorizationCode));
-//                         return;
-//                     } else {
-//                         // Fetch and cache data
-//                         try {
-//                             const userData = await getUserData(req, res);
-//                             userDataCache.set(authorizationCode, userData);
-//                             res.status(200).json(userData);
-//                         } catch (error) {
-//                             res.status(500).json({ error: 'Failed to fetch user data' });
-//                         }
-//                     }
-//                 } else {
-//                     res.status(405).json({ error: 'Method Not Allowed' });
-//                 }
-//                 break;
+            try {
+                await registerForEvent(req, res);
+            } catch (error) {
+                console.error('Error registering for event:', error);
+                res.status(500).json({ error: 'Internal Server Error' });
+            }
+        },
+    },
+    '/cancelRegistration': {
+        DELETE: deleteRegistration, 
+    },
+};
 
-//             case '/registerVolunteer':
-//                 if (req.method === 'POST') {
-//                     const { eventId, userData } = req.body;
-//                     // Validate eventId and userData before calling the function
-//                     if (!eventId || !userData) {
-//                         res.status(400).json({ error: 'Bad Request: Missing eventId or userData' });
-//                         return;
-//                     }
-//                     const registrationResult = await registerForEvent(eventId, userData);
-//                     res.status(200).json(registrationResult);
-//                 } else {
-//                     res.status(405).json({ error: 'Method Not Allowed' });
-//                 }
-//                 break;
+export default async function handler(req, res) {
+    try {
+        // Handle CORS
+        if (handleCORS(req, res)) return;
 
-//             default:
-//                 res.status(404).json({ error: 'Route Not Found' });
-//                 break;
-//         }
-//     } catch (error) {
-//         console.error('Error handling request:', error);
-//         res.status(500).send('Internal Server Error');
-//     }
-// }
+        // Extract handler based on URL and method
+        const route = routeHandlers[req.url];
+        const methodHandler = route?.[req.method];
+
+        if (methodHandler) {
+            await methodHandler(req, res);
+        } else {
+            res.status(404).json({ error: 'Route Not Found' });
+        }
+    } catch (error) {
+        console.error('Error handling request:', error);
+        res.status(500).send('Internal Server Error');
+    }
+}

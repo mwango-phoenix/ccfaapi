@@ -1,41 +1,35 @@
-import fetch from 'node-fetch';
 import { getTokenLogin, getAccessToken, getRequest } from '../utils/apiUtils.mjs';
 
-const userDataCache = new Map();
-
 export default async function getUserData(req, res) {
-    var authorizationCode = req.query.authorizationCode;
-
-    if (userDataCache.has(authorizationCode)) {
-        res.status(200).json(userDataCache.get(authorizationCode));
-        return;
-    }
-
     try {
+        const authorizationCode = req.query.authorizationCode;
+
         const accountId = process.env.ACCOUNT_ID;
-        var accessToken = await getTokenLogin(authorizationCode);
+        const accessToken = await getTokenLogin(authorizationCode);
 
         // Fetch user data
-        let url = `https://api.wildapricot.org/v2.3/accounts/${accountId}/contacts/me`;
-        const userData= await getRequest(url, accessToken);
+        const userDataUrl = `https://api.wildapricot.org/v2.3/accounts/${accountId}/contacts/me`;
+        const userData = await getRequest(userDataUrl, accessToken);
 
         // Extract contactId from user data
         const contactId = userData.Id;
 
-        accessToken = await getAccessToken();
+        // Get a new access token for subsequent requests
+        const newAccessToken = await getAccessToken();
 
         // Fetch event registrations
-        url = `https://api.wildapricot.org/v2.3/accounts/${accountId}/eventregistrations?contactId=${contactId}`;
-        const registrationsData = await getRequest(url, accessToken);
-        // Extract all event registration IDs
-        const registrations = registrationsData.map(registration => [
+        const registrationsUrl = `https://api.wildapricot.org/v2.3/accounts/${accountId}/eventregistrations?contactId=${contactId}`;
+        const registrationsData = await getRequest(registrationsUrl, newAccessToken);
+        const registrations = registrationsData.map((registration) => [
             registration.Event.Id, // eventId
-            registration.Id,        // registration Id
-            // registration.IsCheckedIn
+            registration.Id,       // registration Id
         ]);
 
-        const volunteerData = await getRequest(userData.Url, accessToken)
-        const volunteerPoints = volunteerData.FieldValues.find(field => field.FieldName === "Volunteer Points")?.Value || 0;
+        // Fetch volunteer data to get points
+        const volunteerData = await getRequest(userData.Url, newAccessToken);
+        const volunteerPoints = volunteerData.FieldValues.find(
+            (field) => field.FieldName === 'Volunteer Points'
+        )?.Value || 0;
 
         // Prepare the combined response
         const responseData = {
@@ -47,10 +41,6 @@ export default async function getUserData(req, res) {
             Points: volunteerPoints,
         };
 
-        // Cache the combined data
-        userDataCache.set(authorizationCode, responseData);
-
-        // Send the combined data as JSON response
         res.status(200).json(responseData);
     } catch (error) {
         console.error('Error fetching user data:', error);
