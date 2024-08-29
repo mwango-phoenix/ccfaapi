@@ -39,6 +39,7 @@ export default async function getVolunteerOpportunities(req, res) {
 
         const eventDetailsPromises = EventsIdentifiers.map(eventId => getEventDetails(eventId, accessToken, accountId));
         const events = await Promise.all(eventDetailsPromises);
+        const registrationTypeId = eventData.Details.RegistrationTypes[0]?.Id;
 
         const formattedEvents = events.map(event => {
             const $ = load(event.Details.DescriptionHtml);
@@ -49,7 +50,8 @@ export default async function getVolunteerOpportunities(req, res) {
                 positionsLeft: event.RegistrationsLimit ? event.RegistrationsLimit - event.ConfirmedRegistrationsCount : 'N/A',
                 pointAllocation: pointAllocation || 'TBD',
                 date: new Date(event.StartDate).toLocaleDateString(),
-                id: event.Id
+                id: event.Id,
+                regId: registrationTypeId
             };
         });
 
