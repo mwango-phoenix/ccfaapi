@@ -1,4 +1,3 @@
-//handler.mjs
 import getVolunteerOpportunities from './getVolunteerOpportunities.mjs';
 import registerForEvent from './registerVolunteer.mjs';
 import getUserData from './getUserData.mjs';
@@ -8,10 +7,6 @@ const userDataCache = new Map(); // In-memory cache
 
 // Common CORS handler
 function handleCORS(req, res) {
-    // Uncomment and set headers if needed
-    // res.setHeader('Access-Control-Allow-Origin', '*');
-    // res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    // res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     if (req.method === 'OPTIONS') {
         res.status(200).end();
         return true;
@@ -21,10 +16,10 @@ function handleCORS(req, res) {
 
 // Route handler mapping
 const routeHandlers = {
-    '/getVolunteerOpportunities': {
+    '/api/getVolunteerOpportunities': {
         GET: getVolunteerOpportunities,
     },
-    '/getUserData': {
+    '/api/getUserData': {
         GET: async (req, res) => {
             const { authorizationCode } = req.query;
 
@@ -47,9 +42,9 @@ const routeHandlers = {
             }
         },
     },
-    '/registerVolunteer': {
+    '/api/registerVolunteer': {
         POST: async (req, res) => {
-            const { eventId, regId, userData } = req.query;
+            const { eventId, regId, userData } = req.body; // Changed to req.body
             if (!eventId || !regId || !userData) {
                 res.status(400).json({ error: 'Bad Request: Missing eventId, registrationTypeId or userData' });
                 return;
@@ -63,7 +58,7 @@ const routeHandlers = {
             }
         },
     },
-    '/cancelRegistration': {
+    '/api/cancelRegistration': {
         DELETE: deleteRegistration, 
     },
 };
@@ -75,6 +70,7 @@ export default async function handler(req, res) {
 
         // Extract handler based on URL and method
         const route = routeHandlers[req.url];
+        console.log(route);
         const methodHandler = route?.[req.method];
 
         if (methodHandler) {
