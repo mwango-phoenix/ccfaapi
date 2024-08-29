@@ -68,9 +68,12 @@ export default async function handler(req, res) {
         // Handle CORS
         if (handleCORS(req, res)) return;
 
-        // Extract handler based on URL and method
-        const route = routeHandlers[req.url];
-        console.log(req.url, routeHandlers);
+        // Remove query string from req.url
+        const path = req.url.split('?')[0];
+
+        // Extract handler based on path and method
+        const route = routeHandlers[path];
+        console.log(route, path)
         const methodHandler = route?.[req.method];
 
         if (methodHandler) {
