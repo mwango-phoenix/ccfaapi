@@ -6,6 +6,8 @@ export default async function registerForEvent(req, res) {
     const registrationId = req.query.regId;
     const userData = JSON.parse(req.query.userData);
 
+    console.log(eventId, registrationId, userData)
+
     try {
         const accessToken = await getAccessToken();
         const accountId = process.env.ACCOUNT_ID;
