@@ -6,8 +6,6 @@ export default async function updatePoints(req, res, value) {
         const accessToken = await getAccessToken();
         const userId = req.query.id;
 
-        console.log(userId)
-
         // Fetch volunteer data to get points
         const url = `https://api.wildapricot.org/v2.3/accounts/${accountId}/contacts/${userId}`
         const updateData = {
@@ -18,6 +16,7 @@ export default async function updatePoints(req, res, value) {
                     "SystemCode": "custom-16464376"
                 }
             ],
+            "Id": userId
         }
         const result = await putRequest(url, accessToken, updateData);
 

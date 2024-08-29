@@ -59,7 +59,6 @@ const routeHandlers = {
     '/api/updatePoints': {
         PUT: async (req, res) => {
             const { value } = req.body;
-            console.log(value)
             await updatePoints(req, res, value);
         }
     }
