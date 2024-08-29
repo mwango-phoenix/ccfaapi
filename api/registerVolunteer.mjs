@@ -15,7 +15,7 @@ export default async function registerForEvent(req, res) {
         const registrationData = {
             "Id": 0,
             "Event": {
-                "Id": 5842936
+                "Id": eventId
             },
             "Contact": {
                 "Id": userData.Id,
