@@ -2,6 +2,7 @@ import getVolunteerOpportunities from './getVolunteerOpportunities.mjs';
 import registerForEvent from './registerVolunteer.mjs';
 import getUserData from './getUserData.mjs';
 import deleteRegistration from './cancelRegistration.mjs';
+import updatePoints from './updatePoints.mjs';
 
 const userDataCache = new Map(); // In-memory cache
 
@@ -55,6 +56,12 @@ const routeHandlers = {
     '/api/cancelRegistration': {
         DELETE: deleteRegistration, 
     },
+    '/api/updatePoints': {
+        PUT: async (req, res) => {
+            const { value } = req.body;
+            await updatePoints(req, res, value);
+        }
+    }
 };
 
 export default async function handler(req, res) {
