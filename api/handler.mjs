@@ -70,7 +70,7 @@ export default async function handler(req, res) {
 
         // Extract handler based on URL and method
         const route = routeHandlers[req.url];
-        console.log(route);
+        console.log(req.url, routeHandlers);
         const methodHandler = route?.[req.method];
 
         if (methodHandler) {
