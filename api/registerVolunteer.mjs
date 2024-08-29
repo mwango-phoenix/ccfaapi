@@ -6,7 +6,10 @@ export default async function registerForEvent(req, res) {
     const registrationId = req.query.regId;
     const userData = JSON.parse(req.query.userData);
 
-    console.log(eventId, registrationId, userData)
+    if (!eventId || !registrationId || !userData) {
+        res.status(400).json({ error: 'Bad Request: Missing eventId, registrationTypeId or userData' });
+        return;
+    }
 
     try {
         const accessToken = await getAccessToken();

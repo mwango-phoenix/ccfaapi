@@ -44,12 +44,6 @@ const routeHandlers = {
     },
     '/api/registerVolunteer': {
         POST: async (req, res) => {
-            const { eventId, regId, userData } = req.body; // Changed to req.body
-            if (!eventId || !regId || !userData) {
-                res.status(400).json({ error: 'Bad Request: Missing eventId, registrationTypeId or userData' });
-                return;
-            }
-
             try {
                 await registerForEvent(req, res);
             } catch (error) {
@@ -73,7 +67,6 @@ export default async function handler(req, res) {
 
         // Extract handler based on path and method
         const route = routeHandlers[path];
-        console.log(route, path)
         const methodHandler = route?.[req.method];
 
         if (methodHandler) {
